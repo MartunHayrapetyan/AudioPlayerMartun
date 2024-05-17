@@ -83,3 +83,18 @@ function prev() {
     }
     playSong()
 }
+
+
+function volumeRange(){
+    let volumeImg = document.getElementById("volume-img");
+    let range = document.getElementById("range");
+    song.volume = range.value / 100
+
+    if(range.value == 0){
+        volumeImg.src = "./images/volume-mute.png"
+    } else if(range.value > 75){
+        volumeImg.src = "./images/volume.png"
+    }else{
+        volumeImg.src = "./images/volume-down.png"
+    }
+}
