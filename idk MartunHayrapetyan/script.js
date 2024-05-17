@@ -1,10 +1,17 @@
 let data = {
     title: [
-    "Тахмина - Твоя любовь манила", 
-    "BUSHIDO ZHO - Далеко", 
+    "Твоя любовь манила", 
+    "Далеко", 
     "Stereo Love x On The Floor", 
-    "Ugovhbw - WTF 2", 
-    "Ace Of Base - Happy Nation"],
+    "WTF 2", 
+    "AHappy Nation"],
+    artist: [
+    "Тахмина",
+    "BUSHIDO ZHO",
+    "Unknown",
+    "Ugovhb",
+    "Ace Of Base"
+    ],
     song: [
     "music/TvoyaLyubovManila.mp3", 
     "music/Daleko.mp3", 
@@ -24,6 +31,8 @@ let song = new Audio()
 let currentSong = 0
 function playSong() {
     song.src = data.song[currentSong]
+    let artist = document.getElementById("artist")
+    artist.textContent = data.artist[currentSong]
     let songTitle = document.getElementById("songTitle")
     songTitle.textContent = data.title[currentSong]
     let img = document.getElementsByClassName("row1")
@@ -34,20 +43,24 @@ function playSong() {
 } window.onload = function () { playSong() }
 function playOrPause() {
     let play = document.getElementById("play")
+    let pause = document.getElementById("pause")
     if (song.paused) {
+        pause.style.opacity = 1
+        play.style.opacity = 0
         song.play()
-        play.src = "images/pause.png"
+
     }
     else {
+        pause.style.opacity = 0
+        play.style.opacity = 1
         song.pause()
-        play.src = "images/play-button-arrowhead.png"
     }
 }
 song.addEventListener("timeupdate", function () {
     let fill = document.getElementsByClassName("fill")
     let fill2 = document.getElementsByClassName("fill2")
     let position = song.currentTime / song.duration
-    fill[0].style.marginLeft = position * 100 + "%"
+    fill[0].style.marginLeft = (position * 100 - 1)+ "%"
     fill2[0].style.width = position * 100 + "%"
     convertTime(song.currentTime)
     totalTime(song.duration)
@@ -75,6 +88,7 @@ function next() {
         currentSong = 0
     }
     playSong()
+    document.getElementById("play").src = "images/play-button-arrowhead.png"
 }
 function prev() {
     currentSong--
@@ -82,19 +96,48 @@ function prev() {
         currentSong = data.song.length - 1
     }
     playSong()
+    document.getElementById("play").src = "images/play-button-arrowhead.png"
 }
 
 
 function volumeRange(){
-    let volumeImg = document.getElementById("volume-img");
+    let volumeImg = document.getElementById("volume");
+    let volumeImgMute = document.getElementById("volume-mute");
+    let volumeImgDown = document.getElementById("volume-down");
+    let volumeImgMoreDown = document.getElementById("volume-down+");
     let range = document.getElementById("range");
     song.volume = range.value / 100
-
+    
     if(range.value == 0){
-        volumeImg.src = "./images/volume-mute.png"
-    } else if(range.value > 75){
-        volumeImg.src = "./images/volume.png"
+        volumeImgMute.style.opacity = 100
+        volumeImg.style.opacity = 0
+        volumeImgDown.style.opacity = 0
+        volumeImgMoreDown.style.opacity = 0
+    } else if(range.value > 55){
+        volumeImgMute.style.opacity = 0
+        volumeImg.style.opacity = 100
+        volumeImgDown.style.opacity = 0
+        volumeImgMoreDown.style.opacity = 0
+    }else if(range.value < 25){
+        volumeImgMute.style.opacity = 0
+        volumeImg.style.opacity = 0
+        volumeImgDown.style.opacity = 0
+        volumeImgMoreDown.style.opacity = 100
     }else{
-        volumeImg.src = "./images/volume-down.png"
+        volumeImgMute.style.opacity = 0
+        volumeImg.style.opacity = 0
+        volumeImgDown.style.opacity = 100
+        volumeImgMoreDown.style.opacity = 0
     }
 }
+
+let vlmButtons = document.getElementsByClassName("mute");
+let range = document.getElementById("range");
+
+vlmButtons[0].addEventListener("click", function() {
+    if (range.classList.contains("visible")) {
+        range.classList.remove("visible");
+    } else {
+        range.classList.add("visible");
+    }
+});
