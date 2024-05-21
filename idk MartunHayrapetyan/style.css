@@ -27,10 +27,10 @@ html {
   background-position-y: 50%;
   background-position-x: 50%;
 }
-
 .player {
-  background: rgb(142, 142, 142);
-  background: radial-gradient(circle, rgba(142, 142, 142, 1) 0%, rgba(105, 105, 105, 1) 26%, rgba(75, 75, 75, 1) 70%, rgba(55, 55, 55, 1) 100%);
+  
+  /* background: rgb(142, 142, 142);
+  background: radial-gradient(circle, rgba(142, 142, 142, 1) 0%, rgba(105, 105, 105, 1) 26%, rgba(75, 75, 75, 1) 70%, rgba(55, 55, 55, 1) 100%); */
   position: absolute;
   transform: translate(-50%, -50%);
   top: 50%;
@@ -39,6 +39,8 @@ html {
   width: 400px;
   overflow: hidden;
   padding: 20px;
+  backdrop-filter: blur(50px);
+  border-radius: 10px;
 }
 
 .row1 {
@@ -79,6 +81,19 @@ html {
   align-items: center;
 }
 
+.skip img{
+  width: 30px;
+  height: auto;
+  position: absolute;
+  top: 76%;
+  cursor: pointer;
+}
+#backward{
+  left: 15%;
+}
+#forward{
+  right: 15%;
+}
 .play img,
 .mute img {
   width: 55px;
@@ -89,33 +104,17 @@ html {
 .time {
   display: flex;
   justify-content: space-around;
-  gap: 200px;
+  gap: 70%;
   overflow: hidden;
   margin-top: 10px ;
   color: white;
 }
 
-.seek-bar {
+#seek-bar {
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   margin-top: 10px;
 }
-
-.fill {
-  height: 8px;
-  width: 8px;
-  border-radius: 50%;
-  background-color: rgb(255, 255, 255);
-  z-index: 999;
-  margin-top: -1.5px;
-  margin-left: -5px;
-  position: absolute;
-}
-
 .fill2 {
-  position: absolute;
   height: 5px;
   width: 0px;
   border-radius: 25px;
@@ -124,7 +123,7 @@ html {
 
 #play,#pause{
   position: absolute;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.2s ease-in;
 }
 #pause{
   opacity: 0;
@@ -132,17 +131,16 @@ html {
 .handle {
   margin-right: 2%;
   height: 5px;
-  width: 90%;
   border-radius: 25px;
   background: rgb(131, 131, 131);
   margin-left: 2.5%;
+  cursor: pointer;
 }
 
 .mute img {
   position: absolute;
   width: 50px;
-  height: 50px;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.25s linear;
 }
 #volume,
 #volume-mute {
@@ -164,7 +162,9 @@ input[type="range"] {
 }
 #range {
   opacity: 0;
-  transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.2s ease-in-out;
+  margin-left: -40px;
+  transform: rotate(270deg);
 }
 
 #range.visible {
