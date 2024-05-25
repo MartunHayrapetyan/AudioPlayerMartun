@@ -4,7 +4,7 @@ let data = {
         "Далеко",
         "Stereo Love x On The Floor",
         "WTF 2",
-        "AHappy Nation"],
+        "A Happy Nation"],
     artist: [
         "Тахмина",
         "BUSHIDO ZHO",
@@ -26,77 +26,120 @@ let data = {
         "https://i.ytimg.com/vi/G_ukZsiplG0/maxresdefault.jpg"]
 }
 
+let song = new Audio();
+let currentSong = 0;
+let shuffleEnabled = false;
+let shuffleOrder = [];
 
-let song = new Audio()
-let currentSong = 0
 function playSong() {
-    song.src = data.song[currentSong]
-    let artist = document.getElementById("artist")
-    artist.textContent = data.artist[currentSong]
-    let songTitle = document.getElementById("songTitle")
-    songTitle.textContent = data.title[currentSong]
-    let img = document.getElementsByClassName("row1")
-    img[0].style.backgroundImage = "url(" + data.poster[currentSong] + ")"
-    let main = document.getElementsByClassName("main")
-    main[0].style.backgroundImage = "url(" + data.poster[currentSong] + ")"
-    song.play()
-} window.onload = function () { playSong() }
+    song.src = data.song[currentSong];
+    document.getElementById("artist").textContent = data.artist[currentSong];
+    document.getElementById("songTitle").textContent = data.title[currentSong];
+    document.getElementsByClassName("row1")[0].style.backgroundImage = "url(" + data.poster[currentSong] + ")";
+    document.getElementsByClassName("main")[0].style.backgroundImage = "url(" + data.poster[currentSong] + ")";
+    song.play();
+}
+
+window.onload = function () {
+    playSong();
+}
+
 function playOrPause() {
-    let play = document.getElementById("play")
-    let pause = document.getElementById("pause")
+    let play = document.getElementById("play");
+    let pause = document.getElementById("pause");
     if (song.paused) {
-        pause.style.opacity = 1
-        play.style.opacity = 0
-        song.play()
-
-    }
-    else {
-        pause.style.opacity = 0
-        play.style.opacity = 1
-        song.pause()
+        pause.style.opacity = 1;
+        play.style.opacity = 0;
+        song.play();
+    } else {
+        pause.style.opacity = 0;
+        play.style.opacity = 1;
+        song.pause();
     }
 }
+
 song.addEventListener("timeupdate", function () {
-    let fill2 = document.getElementsByClassName("fill2")
-    let position = song.currentTime / song.duration
-    fill2[0].style.width = position * 100 + "%"
-    convertTime(song.currentTime)
-    totalTime(song.duration)
-    if (song.ended) { next() }
-})
+    let fill2 = document.getElementsByClassName("fill2")[0];
+    let position = song.currentTime / song.duration;
+    fill2.style.width = position * 100 + "%";
+    convertTime(song.currentTime);
+    totalTime(song.duration);
+    if (song.ended) {
+        next();
+    }
+});
+
 function convertTime(seconds) {
-    let currentTime = document.getElementsByClassName("currentTime")
-    let min = Math.floor(seconds / 60)
-    let sec = Math.floor(seconds % 60)
-    min = (min < 10) ? "0" + min : min
-    sec = (sec < 10) ? "0" + sec : sec
-    currentTime[0].textContent = min + ":" + sec
-}
-function totalTime(seconds) {
-    let duration = document.getElementsByClassName("duration")
-    let min = Math.floor(seconds / 60)
-    let sec = Math.floor(seconds % 60)
-    min = (min < 10) ? "0" + min : min
-    sec = (sec < 10) ? "0" + sec : sec
-    duration[0].textContent = min + ":" + sec
-}
-function next() {
-    currentSong++
-    if (currentSong >= data.song.length) {
-        currentSong = 0
-    }
-    playSong()
-    document.getElementById("play").src = "images/play-button-arrowhead.png"
-}
-function prev() {
-    currentSong--
-    if (currentSong < 0) {
-        currentSong = data.song.length - 1
-    }
-    playSong()
-    document.getElementById("play").src = "images/play-button-arrowhead.png"
+    let currentTime = document.getElementsByClassName("currentTime")[0];
+    let min = Math.floor(seconds / 60);
+    let sec = Math.floor(seconds % 60);
+    min = (min < 10) ? "0" + min : min;
+    sec = (sec < 10) ? "0" + sec : sec;
+    currentTime.textContent = min + ":" + sec;
 }
 
+function totalTime(seconds) {
+    let duration = document.getElementsByClassName("duration")[0];
+    let min = Math.floor(seconds / 60);
+    let sec = Math.floor(seconds % 60);
+    min = (min < 10) ? "0" + min : min;
+    sec = (sec < 10) ? "0" + sec : sec;
+    duration.textContent = min + ":" + sec;
+}
+
+function next() {
+    if (shuffleEnabled) {
+        currentSong = shuffleOrder.indexOf(currentSong);
+        currentSong = (currentSong + 1) % shuffleOrder.length;
+        currentSong = shuffleOrder[currentSong];
+    } else {
+        currentSong++;
+        if (currentSong >= data.song.length) {
+            currentSong = 0;
+        }
+    }
+    playSong();
+    document.getElementById("play").src = "images/play-button-arrowhead.png";
+}
+
+function prev() {
+    if (shuffleEnabled) {
+        currentSong = shuffleOrder.indexOf(currentSong);
+        currentSong = (currentSong - 1 + shuffleOrder.length) % shuffleOrder.length;
+        currentSong = shuffleOrder[currentSong];
+    } else {
+        currentSong--;
+        if (currentSong < 0) {
+            currentSong = data.song.length - 1;
+        }
+    }
+    playSong();
+    document.getElementById("play").src = "images/play-button-arrowhead.png";
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+function toggleShuffle() {
+    let shuffle = document.getElementById("shuffle");
+    let shuffleOn = document.getElementById("shuffleOn");
+    shuffleEnabled = !shuffleEnabled;
+
+    if (shuffleEnabled) {
+        shuffleOn.style.opacity = 1;
+        shuffle.style.opacity = 0;
+        shuffleOrder = Array.from(Array(data.song.length).keys());
+        shuffleArray(shuffleOrder);
+    } else {
+        shuffleOn.style.opacity = 0;
+        shuffle.style.opacity = 1;
+        shuffleOrder = [];
+    }
+}
 
 function volumeRange() {
     let volumeImg = document.getElementById("volume");
@@ -104,28 +147,28 @@ function volumeRange() {
     let volumeImgDown = document.getElementById("volume-down");
     let volumeImgMoreDown = document.getElementById("volume-down+");
     let range = document.getElementById("range");
-    song.volume = range.value / 100
+    song.volume = range.value / 100;
 
     if (range.value == 0) {
-        volumeImgMute.style.opacity = 100
-        volumeImg.style.opacity = 0
-        volumeImgDown.style.opacity = 0
-        volumeImgMoreDown.style.opacity = 0
+        volumeImgMute.style.opacity = 100;
+        volumeImg.style.opacity = 0;
+        volumeImgDown.style.opacity = 0;
+        volumeImgMoreDown.style.opacity = 0;
     } else if (range.value > 55) {
-        volumeImgMute.style.opacity = 0
-        volumeImg.style.opacity = 100
-        volumeImgDown.style.opacity = 0
-        volumeImgMoreDown.style.opacity = 0
+        volumeImgMute.style.opacity = 0;
+        volumeImg.style.opacity = 100;
+        volumeImgDown.style.opacity = 0;
+        volumeImgMoreDown.style.opacity = 0;
     } else if (range.value < 25) {
-        volumeImgMute.style.opacity = 0
-        volumeImg.style.opacity = 0
-        volumeImgDown.style.opacity = 0
-        volumeImgMoreDown.style.opacity = 100
+        volumeImgMute.style.opacity = 0;
+        volumeImg.style.opacity = 0;
+        volumeImgDown.style.opacity = 0;
+        volumeImgMoreDown.style.opacity = 100;
     } else {
-        volumeImgMute.style.opacity = 0
-        volumeImg.style.opacity = 0
-        volumeImgDown.style.opacity = 100
-        volumeImgMoreDown.style.opacity = 0
+        volumeImgMute.style.opacity = 0;
+        volumeImg.style.opacity = 0;
+        volumeImgDown.style.opacity = 100;
+        volumeImgMoreDown.style.opacity = 0;
     }
 }
 
@@ -150,23 +193,21 @@ handle.addEventListener('click', function (event) {
     song.currentTime = newPosition * song.duration;
 });
 
-let forward10 = document.getElementById("forward")
-let backward10 = document.getElementById("backward")
+let forward10 = document.getElementById("forward");
+let backward10 = document.getElementById("backward");
 
+forward10.addEventListener('click', function () {
+    if (song.currentTime < song.duration - 10) {
+        song.currentTime = song.currentTime + 10;
+    } else {
+        song.currentTime = song.duration - 1;
+    }
+});
 
-forward10.addEventListener('click', function(){
-    if(song.currentTime < song.duration - 10){
-        song.currentTime = song.currentTime + 10
+backward10.addEventListener('click', function () {
+    if (song.currentTime > 10) {
+        song.currentTime = song.currentTime - 10;
+    } else {
+        song.currentTime = 0;
     }
-    else{
-        song.currentTime = song.duration - 1
-    }
-})
-backward10.addEventListener('click', function(){
-    if(song.currentTime > 10){
-        song.currentTime = song.currentTime - 10
-    }
-    else{
-        song.currentTime = 0
-    }
-})
+});

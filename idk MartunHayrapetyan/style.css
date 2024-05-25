@@ -95,10 +95,24 @@ html {
   right: 15%;
 }
 .play img,
-.mute img {
+.mute img{
   width: 55px;
   height: 55px;
   cursor: pointer;
+}
+
+.shuffle img{
+  width: 30px;
+  position: absolute;
+  right: 10%;
+  bottom: 5%;
+  cursor: pointer;
+
+}
+
+#shuffleOn{
+  opacity: 0;
+  transition: opacity 0.2s ease-in;
 }
 
 .time {
